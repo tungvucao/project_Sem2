@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="user/layout/head :: head"></div>
+
+<body>
+	<!-- Header Start -->
+	<div th:replace="user/layout/header :: header"></div>
+	
+	<!-- Breadcrumb Section Start -->
+	<div class="breadcrumb" th:data-bg-image="@{/fe/images/bg/breadcrumb-bg.jpg}">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="breadcrumb_content">
+						<h1 class="breadcrumb_title">Product</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Breadcrumb Section End -->
+
+	<!-- Product Section Strat -->
+	<div class="shop-product-section sidebar-left overflow-hidden" >
+		<div class="container" >
+			<div class="row flex-md-row-reverse" >
+				<div class="col-md-8 section-padding-04">
+					<!-- Shop Top Bar Start -->
+					<div class="shop-topbar" >
+						<div class="shop-topbar-right">
+							<div class="shop-topbar-item">
+								<form method="get" th:href="@{/list/product/{id}}">
+									<select name="sortBy" id="sortBy" th:value="*{sortBy}">
+										<option value="id">Mặc định</option>
+										<option value="pro_name">Sort by Name</option>
+										<option value="sale_price">Sort by Price</option>
+									</select>
+									<select name="direction" id="Direction" th:value="*{direction}">
+										<option value="asc">Tăng dần</option>
+										<option value="desc">Giảm dần</option>
+									</select>
+									<button style="border-radius: 10px;" class="btn btn-primary" type="submit">Chọn</button>
+								</form>
+							</div>
+						</div>
+
+					</div>
+					<!-- Shop Top Bar End -->
+					<!-- Product Section Start -->
+					<div class="row row-cols-xl-3 row-cols-lg-2 row-cols-sm-2 row-cols-1 mb-n50" >
+						<div class="col mb-50" th:each="allPro : ${allProduct2}">
+							<!-- Product Item Start -->
+							<div class="product-item text-center">
+								<div class="product-item__badge"
+									th:if="${((allPro.price)/2)>=allPro.salePrice and allPro.salePrice != 0}">
+									Big Sale 50%</div>
+								<div class="product-item__image border w-100">
+									<a th:href="@{/detail/{id}(id=${allPro.id})}"><img class="imgfix2"
+											th:src="@{'/uploads/'+${allPro.image}}" alt="Product"></a>
+									<form th:action="@{/cart}" method="post" onsubmit="return true">
+										<input type="hidden" name="proId" th:value="*{allPro.id}"/>
+										<ul class="product-item__meta">
+											<li class="product-item__meta-action">
+												<input type="hidden" name="quantity" value="1"/>
+												<button class="labtn-icon-cart fixcart" type="submit"></input>
+											</li>
+											<li class="product-item__meta-action">
+												<a class="labtn-icon-wishlist" href="#" data-bs-tooltip="tooltip"
+													data-bs-placement="top" title=""
+													data-bs-original-title="Add to wishlist" aria-label="Add to wishlist"
+													data-bs-toggle="modal" data-bs-target="#modalWishlist"></a>
+											</li>
+											<li class="product-item__meta-action">
+												<a class="labtn-icon-compare" href="#" data-bs-tooltip="tooltip"
+													data-bs-placement="top" title="" data-bs-original-title="Add to compare"
+													aria-label="Add to compare" data-bs-toggle="modal"
+													data-bs-target="#modalCompare"></a>
+											</li>
+										</ul>
+									</form>
+								</div>
+								<div class="product-item__content pt-5">
+									<h5 class="product-item__title"><a href="single-product.html"  th:text="${allPro.proName}"></a></h5>
+									<div th:if="${allPro.salePrice}">
+											<i><strike class="product-item__price"
+													th:text="${'$'+allPro.price}"></strike></i>
+											<span class="product-item__price"
+												th:text="${'$'+allPro.salePrice}"></span>
+										</div>
+										<div th:if="${allPro.salePrice == 0}">
+											<b><i><span class="product-item__price"
+														th:text="${'$'+allPro.price}"></span></i></b>
+										</div>
+								</div>
+							</div>
+							<!-- Product Item End -->
+						</div>
+					</div>
+					<!-- Product Section End -->
+					<!-- Shop bottom Bar Start -->
+					<div class="shop-bottombar">
+						<ul class="pagination">
+							<li class="disabled" th:if="${currentPage>1}"><a th:href="@{'?pageNo='+${currentPage-1}}">←</a></li>
+							<li th:each="i:${#numbers.sequence(1,totalPage)}"
+								th:classappend="${currentPage == i ? 'active' : ''}"><a class="active" th:href="@{${keyword != null && keyword != '' ? '?keyword='+keyword+'&' : '?'}+'pageNo='+${i}}"
+									th:text="${i}"></a></li>
+							<li th:if="${currentPage<totalPage}"><a th:href="@{'?pageNo='+${currentPage+1}}">→</a></li>
+						</ul>
+					</div>
+					<!-- Shop bottom Bar End -->
+				</div>
+				<div class="col-md-4">
+					<div class="sidebars">
+						<div class="sidebars_inner">
+							<!-- Search Widget Start -->
+							<form class="sidebars_search">
+								<input type="text" name="keyword" th:value="*{keyword}" placeholder="Search By Name" class="sidebars_search__input">
+								<button class="sidebars_search__btn" type="submit"><i class="lastudioicon-zoom-1"></i></button>
+							</form>
+							<!-- Search Widget End -->
+
+							<!-- Category Widget Start -->
+							<div class="sidebars_widget">
+								<h3 class="sidebars_widget__title">Category</h3>
+								<ul class="sidebars_widget__category" th:each="allCate : ${allCategoryTrue}">
+									<li><a th:href="@{/list/product/{id}(id=${allCate.id})}" th:text="${allCate.cateName}"></a></li>
+								</ul>
+							</div>
+							<!-- Category Widget End -->
+
+							<!-- Popular Product Widget Start -->
+							<div class="sidebars_widget">
+								<h3 class="sidebars_widget__title">Popular products</h3>
+								<ul class="sidebars_widget__product">
+									<!-- Single Product Start -->
+									<li class="single-product">
+										<a href="single-product.html" class="single-product_thumb">
+											<img th:src="@{/fe/images/product/sidebar-1.png}" alt="Sidebar-Image">
+										</a>
+										<div class="single-product_content">
+											<a href="single-product.html"
+												class="single-product_content__title">dsadw</a>
+											<span class="single-product_content__price">$4.99</span>
+										</div>
+									</li>
+									<!-- Single Product End -->
+									<!-- Single Product Start -->
+									<li class="single-product">
+										<a href="single-product.html" class="single-product_thumb">
+											<img th:src="@{/fe/images/product/sidebar-2.png}" alt="Sidebar-Image">
+										</a>
+										<div class="single-product_content">
+											<a href="single-product.html" class="single-product_content__title">Red
+												Velvet</a>
+											<span class="single-product_content__price">$4.99</span>
+										</div>
+									</li>
+									<!-- Single Product End -->
+									<!-- Single Product Start -->
+									<li class="single-product">
+										<a href="single-product.html" class="single-product_thumb">
+											<img th:src="@{/fe/images/product/sidebar-3.png}" alt="Sidebar-Image">
+										</a>
+										<div class="single-product_content">
+											<a href="single-product.html" class="single-product_content__title">Cream
+												Muffin</a>
+											<span class="single-product_content__price">$4.99</span>
+										</div>
+									</li>
+									<!-- Single Product End -->
+								</ul>
+							</div>
+							<!-- Popular Product Widget End -->
+
+							<!-- Instagram Widget Start -->
+							<div class="sidebars_widget">
+								<h3 class="sidebars_widget__title">Instagram</h3>
+								<ul class="sidebars_widget__instagram">
+									<li>
+										<a class="instagram-thumb" href="#">
+											<img th:src="@{/fe/images/instagram/widget-insta-1.jpg}" alt="Image">
+											<i class="lastudioicon lastudioicon-b-instagram"></i>
+										</a>
+									</li>
+									<li>
+										<a class="instagram-thumb" href="#">
+											<img th:src="@{/fe/images/instagram/widget-insta-2.jpg}" alt="Image">
+											<i class="lastudioicon lastudioicon-b-instagram"></i>
+										</a>
+									</li>
+									<li>
+										<a class="instagram-thumb" href="#">
+											<img th:src="@{/fe/images/instagram/widget-insta-3.jpg}" alt="Image">
+											<i class="lastudioicon lastudioicon-b-instagram"></i>
+										</a>
+									</li>
+									<li>
+										<a class="instagram-thumb" href="#">
+											<img th:src="@{/fe/images/instagram/widget-insta-4.jpg}" alt="Image">
+											<i class="lastudioicon lastudioicon-b-instagram"></i>
+										</a>
+									</li>
+								</ul>
+							</div>
+							<!-- Instagram Widget End -->
+
+							<!-- Tags Widget Start -->
+							<div class="sidebars_widget">
+								<h3 class="sidebars_widget__title">Tags</h3>
+								<ul class="sidebars_widget__tags">
+									<li><a href="#">Bread, </a></li>
+									<li><a href="#">Big - Sale, </a></li>
+									<li><a href="#">New </a></li>
+								</ul>
+							</div>
+							<!-- Tags Widget End -->
+
+							<!-- Banner Widget Start -->
+							<div class="sidebars_widget">
+								<a href="#" class="sidebars_widget__banner">
+									<img th:src="@{/fe/images/banner/sidebarbanner.jpg}" alt="banner-Image">
+
+									<div class="banner-content">
+										<span class="banner-content_title">Check it now</span>
+									</div>
+								</a>
+							</div>
+							<!-- Banner Widget End -->
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Product Section End -->
+
+	<!-- Scroll Top Start -->
+	<a href="#/" class="scroll-top" id="scroll-top">
+		<i class="lastudioicon-up-arrow"></i>
+	</a>
+	<!-- Scroll Top End -->
+
+	<div th:replace="user/layout/footer :: footer"></div>
+
+	<!-- JS Vendor, Plugins & Activation Script Files -->
+
+	<!-- Vendors JS -->
+	<div th:replace="user/layout/js :: js"></div>
+</body>
+
+<!-- Mirrored from htmldemo.net/bakerfresh/bakerfresh/single-product.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Sep 2023 11:05:09 GMT -->
+
+</html>

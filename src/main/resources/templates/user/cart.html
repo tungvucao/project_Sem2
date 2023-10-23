@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="user/layout/head :: head"></div>
+
+<body>
+	<!-- Header Start -->
+	<div th:replace="user/layout/header :: header"></div>
+	<!-- Breadcrumb Section Start -->
+	<div class="breadcrumb" th:data-bg-image="@{/fe/images/bg/breadcrumb-bg.jpg}">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="breadcrumb_content">
+						<h1 class="breadcrumb_title">Cart</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Breadcrumb Section End -->
+
+	<!-- Shop Cart Section Start -->
+	<div class="section section-padding-03">
+		<div class="container custom-container">
+			<div class="row mb-n30">
+				<div class="col-lg-8 col-12 mb-30">
+					<!-- Cart Table For Tablet & Up Devices Start -->
+					<div class="table-responsive">
+						<table class="cart-table table text-center align-middle mb-6 d-none d-md-table">
+							<thead>
+								<tr>
+									<th>STT</th>
+									<th class="title text-start">Tên Sản Phẩm</th>
+									<th>Ảnh</th>
+									<th class="price">Giá</th>
+									<th class="quantity">Số Lượng</th>
+									<th class="total">Tổng Tiền</th>
+									<th>Xóa</th>
+								</tr>
+							</thead>
+							<tbody class="border-top-0">
+									<tr th:each="cart,state : ${listCart.cartItems}">
+										<th>
+											<span th:text="${state.count}"></span>
+										</th>
+										<th class="text-start">
+											<a th:href="@{/detail/{id}(id=${cart.product.id})}"
+												th:text="${cart.product.proName}"></a>
+										</th>
+										<th class="cart-thumb">
+											<a th:href="@{/detail/{id}(id=${cart.product.id})}">
+												<img th:src="@{'/uploads/'+${cart.product.image}}" alt="" />
+											</a>
+										</th>
+										<td>
+											<div th:if="${cart.product.salePrice}">
+												<span th:text="${'$'+cart.product.salePrice}"></span>
+											</div>
+											<div th:if="${cart.product.salePrice == 0}">
+												<span th:text="${'$'+cart.product.price}"></span>
+											</div>
+										</td>
+										<td class="text-center cart-quantity">
+											<!-- Quantity Start -->
+											<div class="quantity">
+												<div style="display: flex">
+													<input style="width: 50px; text-align: center" th:id="${cart.id}"
+														min="1" class="ipt" type="number" th:value="*{cart.quantity}" />
+												</div>
+											</div>
+											<!-- Quantity End -->
+										</td>
+										<td>
+											<div>
+												<span th:text="${'$'+(cart.totalMoney)}"></span>
+											</div>
+										</td>
+										<th class="cart-remove">
+											<a th:href="@{/cart/delete-product/{id}(id=${cart.id})}"
+												class="remove-btn"><i onclick="return confirm('Chắc chắn xóa?')"
+													class="lastudioicon lastudioicon-e-remove"></i></a>
+										</th>
+									</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- Cart Table For Tablet & Up Devices End -->
+					<!-- Cart Action Buttons Start -->
+					<div class="row justify-content-between gap-3">
+						<div class="col-auto">
+							<a th:href="@{/list/product}"
+								class="btn btn-outline-dark btn-primary-hover rounded-0">Continue Shopping</a>
+						</div>
+						<div class="col-auto d-flex flex-wrap gap-3">
+							<a th:href="@{/cart}" class="btn btn-outline-dark btn-primary-hover rounded-0">
+								Update Cart
+							</a>
+							<a th:href="@{/cart/deleteAll/{id}(id=${idcart})}"
+								class="btn btn-outline-dark btn-primary-hover rounded-0">Clear All Cart</a>
+						</div>
+					</div>
+					<!-- Cart Action Buttons End -->
+				</div>
+
+				<!-- Cart Totals Start -->
+				<div class="col-lg-4 col-12 mb-30" >
+					<div class="cart-totals">
+						<div class="cart-totals-inner">
+							<h4 class="title">Cart totals</h4>
+							<table class="table bg-transparent">
+								<tbody>
+									<tr class="subtotal">
+										<th class="sub-title">Subtotal</th>
+										<td class="amount">$<span th:text="${totalPrice}"></span></td>
+									</tr>
+									<tr class="total">
+										<th class="sub-title">Total</th>
+										<td class="amount">$<span th:text="${totalPrice}"></span></td>
+									</tr>
+								</tbody>
+							</table>
+							<h3 class="title" th:if="${messCartItem}" style="text-align: center; color: indianred;">
+								<span th:text="${messCartItem}"></span>
+							</h3>
+						</div>
+						<a th:href="@{/checkout}" class="btn btn-dark btn-hover-primary rounded-0 w-100">Proceed to
+							checkout</a>
+					</div>
+				</div>
+				<!-- Cart Totals End -->
+			</div>
+		</div>
+	</div>
+	<!-- Shop Cart Section End -->
+
+	<!-- Scroll Top Start -->
+	<a href="#/" class="scroll-top" id="scroll-top">
+		<i class="lastudioicon-up-arrow"></i>
+	</a>
+	<!-- Scroll Top End -->
+
+	<div th:replace="user/layout/footer :: footer"></div>
+
+	<!-- JS Vendor, Plugins & Activation Script Files -->
+
+	<!-- Vendors JS -->
+	<div th:replace="user/layout/js :: js"></div>
+
+	<script>
+		$(".ipt").change((e) => {
+			let value = e.target.value;
+			let cartId = e.target.id;
+			let data = {quantity: parseInt(value)};
+			$.ajax({
+				type: "PUT",
+				contentType: "application/json",
+				url: `http://localhost:8081/cartItemApi/${cartId}`,
+				data: JSON.stringify(data),
+				dataType: "json",
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+					console.log("SUCCESS : ", data);
+				},
+				error: function (e) {
+					var json = console.log("ERROR : ", e);
+				},
+			});
+		});
+	</script>
+</body>
+
+<!-- Mirrored from htmldemo.net/bakerfresh/bakerfresh/single-product.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Sep 2023 11:05:09 GMT -->
+
+</html>

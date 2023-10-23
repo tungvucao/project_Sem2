@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="user/layout/head :: head"></div>
+
+<body>
+	<!-- Header Start -->
+	<div th:replace="user/layout/header :: header"></div>
+	<!-- Breadcrumb Section Start -->
+	<div class="breadcrumb" th:data-bg-image="@{/fe/images/bg/breadcrumb-bg.jpg}">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="breadcrumb_content">
+						<h1 class="breadcrumb_title">Cart</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Breadcrumb Section End -->
+
+	<!-- Product Section Start -->
+    <div class="shop-product-section section section-padding-03">
+        <div class="container custom-container">
+            <form th:action="@{/postCheckOut}" th:object="${order}" method="POST" class="checkout-form" >
+                <div class="row g-8">
+                    <div class="col-lg-7">
+                        <!-- Billing Address -->
+                        <div id="billing-form">
+                            <h4 class="mb-4">Billing Address</h4>
+                            <div class="row row-cols-sm-2 row-cols-1 g-4">
+                                <div class="col">
+                                    <label>User Name*</label>
+                                    <input class="form-field" type="text" th:field="*{user.userName}">
+                                </div>
+                                <div class="col">
+                                    <label>Full Name*</label>
+                                    <input class="form-field" type="text" th:field="*{fullName}">
+                                </div>
+                                <div class="col">
+                                    <label>Email Address</label>
+                                    <input class="form-field" type="email" th:field="*{user.email}">
+                                </div>
+                                <div class="col">
+                                    <label>Phone no*</label>
+                                    <input class="form-field" type="text" th:field="*{phone}">
+                                </div>
+                                <div class="col-sm-12">
+                                    <label>Address*</label>
+                                    <input class="form-field" type="text" th:field="*{addressShip}">
+                                </div>
+                                <div class="col-sm-12">
+                                    <label>Description</label>
+                                    <input type="text" class="form-field" th:field="*{description}"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+
+                        <!-- Checkout Summary Start -->
+                        <div class="checkout-box">
+
+                            <h4 class="mb-4">Cart Total</h4>
+
+                            <table class="checkout-summary-table table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="cartItm : ${listCart.cartItems}">
+                                        <td><span th:text="${cartItm.product.proName}"></span> x <span th:text="${cartItm.quantity}"></span></td>
+                                        <td th:if="${cartItm.product.salePrice}">
+											$<span th:text="${cartItm.totalMoney}"></span>
+										</td>
+										<td th:if="${cartItm.product.salePrice == 0}">
+											$<span th:text="${cartItm.totalMoney}"></span>
+										</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th class="border-top">Grand Total</th>
+                                        <th>$<span th:text="${totalPrice}"></span></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+							<button class="btn btn-dark btn-primary-hover rounded-0 mt-6">Place order</button>
+                        </div>
+                        <!-- Checkout Summary End -->            
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Product Section End -->
+
+	<!-- Scroll Top Start -->
+	<a href="#/" class="scroll-top" id="scroll-top">
+		<i class="lastudioicon-up-arrow"></i>
+	</a>
+	<!-- Scroll Top End -->
+
+	<div th:replace="user/layout/footer :: footer"></div>
+
+	<!-- JS Vendor, Plugins & Activation Script Files -->
+
+	<!-- Vendors JS -->
+	<div th:replace="user/layout/js :: js"></div>
+
+	<script>
+		$(".ipt").change((e) => {
+			let value = e.target.value;
+			let cartId = e.target.id;
+			let data = {quantity: parseInt(value)};
+			$.ajax({
+				type: "PUT",
+				contentType: "application/json",
+				url: `http://localhost:8081/cartItemApi/${cartId}`,
+				data: JSON.stringify(data),
+				dataType: "json",
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+					console.log("SUCCESS : ", data);
+				},
+				error: function (e) {
+					var json = console.log("ERROR : ", e);
+				},
+			});
+		});
+	</script>
+</body>
+
+<!-- Mirrored from htmldemo.net/bakerfresh/bakerfresh/single-product.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Sep 2023 11:05:09 GMT -->
+
+</html>

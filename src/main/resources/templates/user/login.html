@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="user/layout/head :: head"></div>
+
+<body>
+	<!-- Header Start -->
+	<div th:replace="user/layout/header :: header"></div>
+
+    <!-- Breadcrumb Section Start -->
+    <div class="breadcrumb" th:data-bg-image="@{/fe/images/bg/breadcrumb-bg-2.jpg}">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb_content">
+                        <h1 class="breadcrumb_title">Login</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Order Tracking Section Start -->
+    <div class="tracking">
+        <div class="tracking-col tracking-col-form">
+            <form class="tracking-form" th:action="@{/login}" method="post">
+                <div class="row row-cols-1 g-4">
+                    <div class="col">
+                        <p class="tracking-form-text" th:if="${mess} == null">
+							<b><a href="/register">Đăng ký </a></b> nếu bạn chưa có tài khoản!
+						</p>
+						<p class="tracking-form-text" th:if="${mess}">
+							<b th:text="${mess}" style="color: rgb(98, 157, 116);"></b>
+						</p>
+                    </div>
+                    <div class="col">
+                        <label>Username</label>
+                        <input class="form-field" type="text" name="username">
+
+                    </div>
+                    <div class="col">
+                        <label>Password</label>
+                        <input class="form-field" type="password" name="password">
+                    </div>
+                    <div class="col text-center mt-10">
+                        <button type="submit"class="btn btn-dark btn-hover-primary">Đăng nhập</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tracking-col d-none d-md-block">
+            <div class="tracking-bg" th:data-bg-image="@{/fe/images/bg/order-tracking.jpg}"></div>
+        </div>
+    </div>
+    <!-- Order Tracking Section End -->
+
+	<!-- Scroll Top Start -->
+	<a href="#/" class="scroll-top" id="scroll-top">
+		<i class="lastudioicon-up-arrow"></i>
+	</a>
+	<!-- Scroll Top End -->
+
+	<div th:replace="user/layout/footer :: footer"></div>
+
+	<!-- JS Vendor, Plugins & Activation Script Files -->
+
+	<!-- Vendors JS -->
+	<div th:replace="user/layout/js :: js"></div>
+</body>
+
+<!-- Mirrored from htmldemo.net/bakerfresh/bakerfresh/single-product.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Sep 2023 11:05:09 GMT -->
+
+</html>

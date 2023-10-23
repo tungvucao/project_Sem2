@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/layout/head :: head"></div>
+
+<body class="hold-transition skin-blue sidebar-mini">
+	<!-- Site wrapper -->
+	<div class="wrapper">
+		<div th:replace="admin/layout/header :: header"></div>
+
+		<!-- =============================================== -->
+
+		<!-- Left side column. contains the sidebar -->
+		<div th:replace="admin/layout/sidebar :: sidebar"></div>
+
+		<!-- =============================================== -->
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+
+			<section class="content-header">
+				<h1>
+					<a class="btn btn-success" th:href="@{/admin/order}" role="button">Back</a>
+				</h1>
+				<ol class="breadcrumb">
+					<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+					<li><a href="#">Examples</a></li>
+					<li class="active">Invoice</li>
+				</ol>
+			</section>
+
+			<section class="invoice">
+
+				<div class="row">
+					<div class="col-xs-12">
+						<h2 class="page-header">
+							<i class="fa fa-globe"></i> Chi tiết hóa đơn
+							<small class="pull-right" th:text="${time}"></small>
+						</h2>
+					</div>
+
+				</div>
+
+				<div class="row invoice-info">
+					<div class="col-sm-4 invoice-col">
+						From
+						<address>
+							<strong>Admin</strong><br>
+							250 Hoàng Quốc Việt<br>
+							Cổ Nhuế - Cầu Giấy - Hà Nội<br>
+							Phone: (804) 123-5432<br>
+							Email: <a href="#"
+								data-cfemail="dab3b4bcb59abbb6b7bba9bbbfbfbea9aeafbeb3b5f4b9b5b7">bakershop@gmail.com</a>
+						</address>
+					</div>
+
+					<div class="col-sm-4 invoice-col">
+						To
+						<address>
+							<strong th:text="${order.fullName}"></strong><br>
+							<span th:text="${order.addressShip}" ></span><br>
+							Phone: <span th:text="${order.phone}"><br>
+						</address>
+					</div>
+
+					<div class="col-sm-4 invoice-col">
+						<b>Invoice #007612</b><br>
+						<br>
+						<b>Order ID:</b> <span th:text="${order.id}" ></span><br>
+						<b>Account:</b> <span th:text="${order.user.userName}" ></span>
+					</div>
+
+				</div>
+
+
+				<div class="row">
+					<div class="col-xs-12 table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Product</th>
+									<th>Qty</th>
+									<th>Description</th>
+									<th>Price</th>
+									<th>Subtotal</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="orderDetail : ${listOrderDetail}">
+									<td th:text="${orderDetail.product.proName}"></td>
+									<td th:text="${orderDetail.quantity}"></td>
+									<td th:text="${orderDetail.order.description}"></td>
+									<td th:text="${orderDetail.price}"></td>
+									<td th:text="${(orderDetail.price) * (orderDetail.quantity)}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-xs-6">
+						<form th:action="@{/admin/updateOrder}" method="POST">
+							<input type="hidden" name='id' th:value="${order.id}">
+							<div class="form-group">
+								<label>Trạng thái đơn hàng</label>
+								<select class="form-control" fdprocessedid="2rv64r" name="status">
+									<option value="0">Đang chờ</option>
+									<option value="1">Đã duyệt</option>
+									<option value="2">Đang giao hàng</option>
+									<option value="3">Đã giao</option>
+								</select>
+								<br>
+								<button type="submit" class="btn btn-primary" >
+									Cập nhật
+								</button>
+							</div>
+						</form>
+					</div>
+
+			</section>
+
+			<div class="clearfix"></div>
+		</div>
+		<!-- /.content-wrapper -->
+
+		<div th:replace="admin/layout/footer :: footer"></div>
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- jQuery 3 -->
+	<div th:replace="admin/layout/js :: js"></div>
+</body>
+
+</html>
